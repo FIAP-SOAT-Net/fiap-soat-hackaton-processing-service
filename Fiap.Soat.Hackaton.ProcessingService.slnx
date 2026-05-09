@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/010 - Enterprise Business Rules/">
+    <Project Path="src/Fiap.Soat.Hackaton.ProcessingService.Domain/Fiap.Soat.Hackaton.ProcessingService.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/020 - Application Business Rules/">
+    <Project Path="src/Fiap.Soat.Hackaton.ProcessingService.Application/Fiap.Soat.Hackaton.ProcessingService.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/030 - Frameworks &amp; Drivers/">
+    <Project Path="src/Fiap.Soat.Hackaton.ProcessingService.Api/Fiap.Soat.Hackaton.ProcessingService.Api.csproj" />
+    <Project Path="src/Fiap.Soat.Hackaton.ProcessingService.Infrastructure/Fiap.Soat.Hackaton.ProcessingService.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Fiap.Soat.Hackaton.ProcessingService.Api.Tests/Fiap.Soat.Hackaton.ProcessingService.Api.Tests.csproj" />
+    <Project Path="tests/Fiap.Soat.Hackaton.ProcessingService.Application.Tests/Fiap.Soat.Hackaton.ProcessingService.Application.Tests.csproj" />
+    <Project Path="tests/Fiap.Soat.Hackaton.ProcessingService.Domain.Tests/Fiap.Soat.Hackaton.ProcessingService.Domain.Tests.csproj" />
+    <Project Path="tests/Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Tests/Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Tests.csproj" />
+    <Project Path="tests/Fiap.Soat.Hackaton.ProcessingService.Integration.Tests/Fiap.Soat.Hackaton.ProcessingService.Integration.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/" />
+  <Folder Name="/tools/docker/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Folder Name="/tools/github/" />
+</Solution>

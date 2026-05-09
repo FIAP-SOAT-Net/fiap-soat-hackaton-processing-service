@@ -1,0 +1,156 @@
+{
+  "rabbit_version": "3.13.7",
+  "rabbitmq_version": "3.13.7",
+  "users": [
+    {
+      "name": "fiap_hackaton",
+      "password_hash": "yU9rBqEWE40G65fU23600Kbd0OfuJxHM6je/NAsQtvTBbAFV",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ["administrator"]
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "fiap_hackaton",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "policies": [],
+  "queues": [
+    {
+      "name": "fileservice.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "file.processing.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "file.status.received",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "file.status.processing",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "file.status.analyzed",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "file.status.error",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "fileservice.events.exchange",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "file.processing.events.exchange",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "fileservice.events.exchange",
+      "vhost": "/",
+      "destination": "fileservice.events",
+      "destination_type": "queue",
+      "routing_key": "file.uploaded.*",
+      "arguments": {}
+    },
+    {
+      "source": "file.processing.events.exchange",
+      "vhost": "/",
+      "destination": "file.processing.events",
+      "destination_type": "queue",
+      "routing_key": "file.processed.#",
+      "arguments": {}
+    },
+    {
+      "source": "file.processing.events.exchange",
+      "vhost": "/",
+      "destination": "file.status.received",
+      "destination_type": "queue",
+      "routing_key": "file.status.received.*",
+      "arguments": {}
+    },
+    {
+      "source": "file.processing.events.exchange",
+      "vhost": "/",
+      "destination": "file.status.processing",
+      "destination_type": "queue",
+      "routing_key": "file.status.processing.*",
+      "arguments": {}
+    },
+    {
+      "source": "file.processing.events.exchange",
+      "vhost": "/",
+      "destination": "file.status.analyzed",
+      "destination_type": "queue",
+      "routing_key": "file.status.analyzed.*",
+      "arguments": {}
+    },
+    {
+      "source": "file.processing.events.exchange",
+      "vhost": "/",
+      "destination": "file.status.error",
+      "destination_type": "queue",
+      "routing_key": "file.status.error.*",
+      "arguments": {}
+    }
+  ],
+  "topic_permissions": [],
+  "global_parameters": []
+}
