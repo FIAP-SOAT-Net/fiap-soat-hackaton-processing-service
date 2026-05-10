@@ -1,3 +1,4 @@
+using Fiap.Soat.Hackaton.ProcessingService.Api.Endpoints;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.Extensions;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.HealthChecks;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.Middlewares;
@@ -12,6 +13,7 @@ using Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Services.Messaging;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,7 +50,6 @@ _ = builder.Services.AddHealthChecks()
     .AddCheck<DetailedHealthCheck>("detailed")
     .AddDbContextCheck<AppDbContext>("database");
 _ = builder.Services.AddRouting(options => options.LowercaseUrls = true);
-_ = builder.Services.AddSwaggerExtension(builder.Configuration);
 _ = builder.Services.AddMemoryCache();
 _ = builder.Services.AddInterfaceAdapters();
 
@@ -66,19 +67,7 @@ if (app.Environment.IsDevelopment())
 _ = app.UseHttpsRedirection();
 _ = app.UseMiddleware<RequestLoggingEnrichmentMiddleware>();
 
-_ = app.UseSwagger();
-_ = app.UseSwaggerUI(c =>
-{
-    c.EnableTryItOutByDefault();
-    c.DisplayRequestDuration();
-});
-
-_ = app.UseReDoc(c =>
-{
-    c.RoutePrefix = "docs";
-    c.DocumentTitle = "Fiap | Soat | Hackaton | Processing File Api";
-    c.SpecUrl = "/swagger/v1/swagger.json";
-});
+_ = app.MapScalarApiReference();
 _ = app.UseMiddleware<ExceptionMiddleware>();
 _ = app.UseHttpsRedirection();
 _ = app.UseAuthorization();
@@ -87,6 +76,8 @@ _ = app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
+
+_ = ProcessingFileEndpoints.Map(app);
 
 await app.RunAsync();
 
