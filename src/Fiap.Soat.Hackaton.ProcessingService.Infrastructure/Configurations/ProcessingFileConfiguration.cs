@@ -8,7 +8,7 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
 {
     public void Configure(EntityTypeBuilder<ProcessingFile> builder)
     {
-        builder.ToTable("files", tableBuilder =>
+        builder.ToTable("processing_files", tableBuilder =>
         {
             tableBuilder.HasCheckConstraint(
                 "chk_files_status",
@@ -24,6 +24,12 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
             .HasColumnName("name")
             .HasColumnType("VARCHAR(255)")
             .HasMaxLength(255)
+            .IsRequired();
+
+        builder.Property(x => x.FileId)
+            .HasColumnName("file_id")
+            .HasColumnType("CHAR(36)")
+            .HasMaxLength(36)
             .IsRequired();
 
         builder.Property(x => x.BucketName)

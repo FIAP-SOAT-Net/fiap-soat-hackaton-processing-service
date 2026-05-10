@@ -14,9 +14,4 @@
         <PackageReference Include="MediatR" Version="12.5.0"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="UseCases\File\Get\" />
-      <Folder Include="UseCases\File\List\" />
-    </ItemGroup>
-
 </Project>

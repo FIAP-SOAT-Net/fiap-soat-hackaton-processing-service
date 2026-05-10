@@ -6,7 +6,7 @@ public class Entity
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
-    public void MarkAsUpdated()
+    protected void MarkAsUpdated()
     {
         UpdatedAt = DateTime.UtcNow;
     }

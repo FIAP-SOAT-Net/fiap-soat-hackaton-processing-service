@@ -44,7 +44,7 @@ _ = builder.Services.AddScoped<IProcessingEventLogRepository, ProcessingEventLog
 _ = builder.Services.AddServiceExtensions();
 _ = builder.Services.AddRepositoryExtensions();
 _ = builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-_ = builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UpdateFileStatusCommand).Assembly));
+_ = builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UpdateProcessingFileStatusCommand).Assembly));
 _ = builder.Services.AddHttpContextAccessor();
 _ = builder.Services.AddHealthChecks()
     .AddCheck<DetailedHealthCheck>("detailed")
