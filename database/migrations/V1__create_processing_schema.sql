@@ -10,7 +10,6 @@ CREATE TABLE processing_files (
     status VARCHAR(30) NOT NULL DEFAULT 'RECEIVED',
     created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-    PRIMARY KEY (id),
     KEY idx_processing_files_status (status),
     KEY idx_processing_files_uploaded_at (uploaded_at),
     KEY idx_processing_files_bucket_key (bucket_name, `key`),
@@ -25,8 +24,7 @@ CREATE TABLE event_logs (
     status_from VARCHAR(30) NULL,
     status_to VARCHAR(30) NOT NULL,
     created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    PRIMARY KEY (id),
-    KEY idx_event_logs_file_id (file_id),
+    KEY idx_event_logs_file_id (processing_file_id),
     KEY idx_event_logs_event_type (event_type),
     KEY idx_event_logs_created_at (created_at),
     CONSTRAINT chk_event_logs_status_from

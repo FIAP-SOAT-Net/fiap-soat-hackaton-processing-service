@@ -24,7 +24,7 @@ services:
   flyway:
     image: flyway/flyway
     container_name: fiap-mysql-migration
-    command: -url=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE} -user=${MYSQL_USER} -password=${MYSQL_PASSWORD} -connectRetries=60 migrate
+    command: -url=jdbc:mysql://mysqldb:${MYSQL_PORT}/${MYSQL_DATABASE} -user=${MYSQL_USER} -password=${MYSQL_PASSWORD} -connectRetries=60 migrate
     volumes:
       - ./database/migrations:/flyway/sql
     depends_on:

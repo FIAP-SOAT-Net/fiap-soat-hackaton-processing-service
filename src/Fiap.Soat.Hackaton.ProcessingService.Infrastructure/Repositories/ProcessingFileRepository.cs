@@ -10,8 +10,8 @@ public sealed class ProcessingFileRepository(AppDbContext appDbContext) : Reposi
     public async Task<IReadOnlyList<ProcessingFile>> GetAllAsync(string? fileId, string? status, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken)
     {
         var query = Query();
-        if (string.IsNullOrEmpty(fileId)) query = query.Where(x => x.FileId == fileId);
-        if (string.IsNullOrEmpty(status)) query = query.Where(x => x.Status == status);
+        if (!string.IsNullOrEmpty(fileId)) query = query.Where(x => x.FileId == fileId);
+        if (!string.IsNullOrEmpty(status)) query = query.Where(x => x.Status == status);
         if (startDate.HasValue) query = query.Where(x => x.CreatedAt >= startDate.Value);
         if (endDate.HasValue) query = query.Where(x => x.CreatedAt <= endDate.Value);
 
