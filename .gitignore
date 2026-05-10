@@ -429,3 +429,5 @@ FodyWeavers.xsd
 *.msp
 
 volume/cache/
+
+.idea/*
