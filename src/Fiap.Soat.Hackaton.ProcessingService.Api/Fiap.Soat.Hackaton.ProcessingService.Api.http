@@ -1,6 +1,0 @@
-@Fiap.Soat.Hackaton.ProcessingService.Api_HostAddress = http://localhost:5125
-
-GET {{Fiap.Soat.Hackaton.ProcessingService.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
