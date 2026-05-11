@@ -1,3 +1,4 @@
+using Fiap.Soat.Hackaton.ProcessingService.Api.BackgroundServices;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Endpoints;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.Extensions;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.HealthChecks;
@@ -47,6 +48,7 @@ _ = builder.Services.AddHealthChecks()
 _ = builder.Services.AddRouting(options => options.LowercaseUrls = true);
 _ = builder.Services.AddMemoryCache();
 _ = builder.Services.AddInterfaceAdapters();
+_ = builder.Services.AddHostedService<MessagesConsumer>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 _ = builder.Services.AddOpenApi();
