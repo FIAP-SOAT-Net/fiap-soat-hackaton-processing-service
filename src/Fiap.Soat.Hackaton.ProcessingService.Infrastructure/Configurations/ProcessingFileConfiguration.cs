@@ -33,7 +33,8 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
 
         builder.Property(x => x.FileId)
             .HasColumnName("file_id")
-            .HasColumnType("CHAR(36)")
+            .HasColumnType("VARCHAR(36)")
+            .HasMaxLength(36)
             .IsRequired();
 
         builder.Property(x => x.BucketName)
@@ -74,7 +75,7 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
 
         builder.HasMany(x => x.EventLogs)
             .WithOne(x => x.File)
-            .HasForeignKey(x => x.FileId)
+            .HasForeignKey(x => x.ProcessingFileId)
             .HasConstraintName("fk_event_logs_file_id")
             .OnDelete(DeleteBehavior.Cascade);
     }

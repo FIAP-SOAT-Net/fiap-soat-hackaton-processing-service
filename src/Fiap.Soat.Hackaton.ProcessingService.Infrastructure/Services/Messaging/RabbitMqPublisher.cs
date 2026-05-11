@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Services.Messaging;
 
-public class RabbitMqPublisher : IMessagePublisher, IDisposable
+public sealed class RabbitMqPublisher : IMessagePublisher, IDisposable
 {
     private readonly RabbitMqSettings _settings;
     private readonly IConnection _connection;
@@ -19,9 +19,9 @@ public class RabbitMqPublisher : IMessagePublisher, IDisposable
 
         var factory = new ConnectionFactory
         {
-            HostName = _settings.HostName,
+            HostName = _settings.Host,
             Port = _settings.Port,
-            UserName = _settings.UserName,
+            UserName = _settings.User,
             Password = _settings.Password,
             DispatchConsumersAsync = true
         };

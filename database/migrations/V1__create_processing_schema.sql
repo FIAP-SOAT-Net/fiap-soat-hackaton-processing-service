@@ -1,6 +1,6 @@
 CREATE TABLE processing_files (
     id char(36) charset ascii not null primary key,
-    file_id char(36) NOT NULL,
+    file_id VARCHAR(36) NOT NULL,
     name VARCHAR(255) NOT NULL,
     bucket_name VARCHAR(255) NOT NULL,
     `key` VARCHAR(255) NOT NULL,

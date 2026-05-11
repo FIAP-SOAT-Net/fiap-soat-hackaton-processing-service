@@ -7,7 +7,7 @@ namespace Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Repositories;
 
 public sealed class ProcessingFileRepository(AppDbContext appDbContext) : Repository<ProcessingFile>(appDbContext), IProcessingFileRepository
 {
-    public async Task<IReadOnlyList<ProcessingFile>> GetAllAsync(Guid? fileId, string? status, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<ProcessingFile>> GetAllAsync(string? fileId, string? status, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken)
     {
         var query = Query();
         if (fileId is not null) query = query.Where(x => x.FileId == fileId);
