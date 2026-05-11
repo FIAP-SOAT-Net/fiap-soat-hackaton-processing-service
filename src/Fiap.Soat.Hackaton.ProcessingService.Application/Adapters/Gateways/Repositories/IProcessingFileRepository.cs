@@ -4,5 +4,5 @@ namespace Fiap.Soat.Hackaton.ProcessingService.Application.Adapters.Gateways.Rep
 
 public interface IProcessingFileRepository : IRepository<ProcessingFile>
 {
-    Task<IReadOnlyList<ProcessingFile>> GetAllAsync(string? fileId, string? status, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken);
+    Task<IReadOnlyList<ProcessingFile>> GetAllAsync(Guid? fileId, string? status, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken);
 }

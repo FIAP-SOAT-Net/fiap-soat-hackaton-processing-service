@@ -1,13 +1,15 @@
 using Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 using Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Data;
 
+[ExcludeFromCodeCoverage]
 public class AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : DbContext(dbContextOptions)
 {
-    public DbSet<ProcessingFile> Files { get; set; } = null!;
-    public DbSet<ProcessingEventLog> EventLogs { get; set; } = null!;
+     public DbSet<ProcessingFile> ProcessingFiles { get; set; }
+     public DbSet<ProcessingEventLog> EventLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,4 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : DbC
         modelBuilder.ApplyConfiguration(new ProcessingFileConfiguration());
         modelBuilder.ApplyConfiguration(new ProcessingEventLogConfiguration());
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
 }

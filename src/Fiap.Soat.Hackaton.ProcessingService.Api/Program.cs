@@ -33,12 +33,7 @@ _ = builder.Services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
 // Configure MySQL
 var mySqlConnectionString = builder.Configuration.GetConnectionString("MySql")
     ?? throw new InvalidOperationException("Connection string 'MySql' was not configured.");
-
-_ = builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(mySqlConnectionString, new MySqlServerVersion(new Version(8, 4, 0))));
-
-_ = builder.Services.AddScoped<IProcessingFileRepository, ProcessingFileRepository>();
-_ = builder.Services.AddScoped<IProcessingEventLogRepository, ProcessingEventLogRepository>();
+_ = builder.Services.AddDbContext<AppDbContext>((options) => options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)));
 
 // Add services to the container.
 _ = builder.Services.AddServiceExtensions();

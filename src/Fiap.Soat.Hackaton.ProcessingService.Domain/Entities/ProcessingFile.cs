@@ -3,7 +3,7 @@ namespace Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 public sealed class ProcessingFile : Entity
 {
     public string Name { get; private set; }
-    public string FileId { get; private set; }
+    public Guid FileId { get; private set; }
     public string BucketName { get; private set; }
     public string Key { get; private set; }
     public long FileSizeBytes { get; private set; }

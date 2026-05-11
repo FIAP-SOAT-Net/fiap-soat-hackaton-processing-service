@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Application.UseCases.File.List;
 
-public record ListProcessingFilesQuery(string? FileId, string? Status, DateTime? StartDate, DateTime? EndDate) : IRequest<Response<IReadOnlyList<ProcessingFile>>>;
+public record ListProcessingFilesQuery(Guid? FileId, string? Status, DateTime? StartDate, DateTime? EndDate) : IRequest<Response<IReadOnlyList<ProcessingFile>>>;

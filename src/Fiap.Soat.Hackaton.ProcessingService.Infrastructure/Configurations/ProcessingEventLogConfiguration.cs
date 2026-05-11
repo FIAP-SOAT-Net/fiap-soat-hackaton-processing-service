@@ -8,24 +8,15 @@ public sealed class ProcessingEventLogConfiguration : IEntityTypeConfiguration<P
 {
     public void Configure(EntityTypeBuilder<ProcessingEventLog> builder)
     {
-        builder.ToTable("event_logs", tableBuilder =>
-        {
-            tableBuilder.HasCheckConstraint(
-                "chk_event_logs_status_from",
-                "status_from IS NULL OR status_from IN ('RECEIVED', 'PROCESSING', 'ANALYZED', 'ERROR', 'PROCESSED')");
-
-            tableBuilder.HasCheckConstraint(
-                "chk_event_logs_status_to",
-                "status_to IN ('RECEIVED', 'PROCESSING', 'ANALYZED', 'ERROR', 'PROCESSED')");
-        });
+        builder.ToTable("event_logs");
 
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
         builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
 
         builder.Property(x => x.FileId)
-            .HasColumnName("file_id")
-            .HasColumnType("char(36)")
+            .HasColumnName("processing_file_id")
+            .HasColumnType("CHAR(36)")
             .IsRequired();
 
         builder.Property(x => x.EventType)

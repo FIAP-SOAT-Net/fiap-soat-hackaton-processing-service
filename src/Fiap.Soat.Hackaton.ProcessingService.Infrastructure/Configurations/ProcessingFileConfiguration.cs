@@ -8,17 +8,22 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
 {
     public void Configure(EntityTypeBuilder<ProcessingFile> builder)
     {
-        builder.ToTable("processing_files", tableBuilder =>
-        {
-            tableBuilder.HasCheckConstraint(
-                "chk_files_status",
-                "status IN ('RECEIVED', 'PROCESSING', 'ANALYZED', 'ERROR', 'PROCESSED')");
-        });
+        builder.ToTable("processing_files");
 
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
-        builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
-        builder.Property(x => x.UpdatedAt).HasColumnName("updated_at").IsRequired();
+        builder.Property(x => x.Id)
+            .HasColumnName("id")
+            .ValueGeneratedOnAdd();
+
+        builder.Property(x => x.CreatedAt)
+            .HasColumnType("datetime(6)")
+            .HasColumnName("created_at")
+            .IsRequired();
+
+        builder.Property(x => x.UpdatedAt)
+            .HasColumnType("datetime(6)")
+            .HasColumnName("updated_at")
+            .IsRequired();
 
         builder.Property(x => x.Name)
             .HasColumnName("name")
@@ -29,7 +34,6 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
         builder.Property(x => x.FileId)
             .HasColumnName("file_id")
             .HasColumnType("CHAR(36)")
-            .HasMaxLength(36)
             .IsRequired();
 
         builder.Property(x => x.BucketName)
@@ -40,8 +44,8 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
 
         builder.Property(x => x.Key)
             .HasColumnName("key")
-            .HasColumnType("VARCHAR(1024)")
-            .HasMaxLength(1024)
+            .HasColumnType("VARCHAR(255)")
+            .HasMaxLength(255)
             .IsRequired();
 
         builder.Property(x => x.FileSizeBytes)
