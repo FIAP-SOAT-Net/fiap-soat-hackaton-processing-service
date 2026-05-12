@@ -36,6 +36,8 @@ public sealed class ProcessingEventLogConfiguration : IEntityTypeConfiguration<P
             .HasMaxLength(30)
             .IsRequired();
 
+        builder.Ignore(x => x.UpdatedAt);
+
         builder.HasIndex(x => x.ProcessingFileId).HasDatabaseName("idx_event_logs_file_id");
         builder.HasIndex(x => x.EventType).HasDatabaseName("idx_event_logs_event_type");
         builder.HasIndex(x => x.CreatedAt).HasDatabaseName("idx_event_logs_created_at");
