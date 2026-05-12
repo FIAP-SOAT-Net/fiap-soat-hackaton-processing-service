@@ -72,11 +72,5 @@ public sealed class ProcessingFileConfiguration : IEntityTypeConfiguration<Proce
         builder.HasIndex(x => x.Status).HasDatabaseName("idx_files_status");
         builder.HasIndex(x => x.UploadedAt).HasDatabaseName("idx_files_uploaded_at");
         builder.HasIndex(x => new { x.BucketName, x.Key }).HasDatabaseName("idx_files_bucket_key");
-
-        builder.HasMany(x => x.EventLogs)
-            .WithOne(x => x.File)
-            .HasForeignKey(x => x.ProcessingFileId)
-            .HasConstraintName("fk_event_logs_file_id")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

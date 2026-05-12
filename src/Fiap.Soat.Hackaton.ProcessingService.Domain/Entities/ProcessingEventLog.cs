@@ -2,15 +2,16 @@ namespace Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 
 public sealed class ProcessingEventLog : Entity
 {
-    public string ProcessingFileId { get; private set; }
+    public Guid ProcessingProcessingFileId { get; private set; }
     public string EventType { get; private set; }
     public string? StatusFrom { get; private set; }
     public string StatusTo { get; private set; }
-    public ProcessingFile File { get; private set; } = null!;
 
-    public ProcessingEventLog(string fileId, string eventType, string? statusFrom, string statusTo)
+    private ProcessingEventLog() { }
+
+    public ProcessingEventLog(Guid processingFileId, string eventType, string? statusFrom, string statusTo)
     {
-        ProcessingFileId = fileId;
+        ProcessingProcessingFileId = processingFileId;
         EventType = eventType;
         StatusFrom = statusFrom;
         StatusTo = statusTo;

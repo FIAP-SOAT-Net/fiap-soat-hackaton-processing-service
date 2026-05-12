@@ -10,24 +10,25 @@ public sealed class ProcessingFile : Entity
     public string? MimeType { get; private set; }
     public DateTime UploadedAt { get; private set; }
     public string Status { get; private set; } = "RECEIVED";
-    public ICollection<ProcessingEventLog> EventLogs { get; private set; } = new List<ProcessingEventLog>();
+
+    private ProcessingFile() { }
 
     public ProcessingFile(
+        string fileId,
         string name,
         string bucketName,
         string key,
         long fileSizeBytes,
         DateTime uploadedAt,
-        string? mimeType = null,
-        string status = "RECEIVED")
+        string? mimeType)
     {
+        FileId = fileId;
         Name = name;
         BucketName = bucketName;
         Key = key;
         FileSizeBytes = fileSizeBytes;
         UploadedAt = uploadedAt;
         MimeType = mimeType;
-        Status = status;
     }
 
     public ProcessingFile UpdateStatus(string status)
@@ -35,10 +36,5 @@ public sealed class ProcessingFile : Entity
         Status = status;
         MarkAsUpdated();
         return this;
-    }
-
-    public void AddEventLog(ProcessingEventLog eventLog)
-    {
-        EventLogs.Add(eventLog);
     }
 }

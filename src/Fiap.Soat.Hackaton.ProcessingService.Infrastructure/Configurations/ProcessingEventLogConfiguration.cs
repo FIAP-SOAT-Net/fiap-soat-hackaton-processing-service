@@ -14,7 +14,7 @@ public sealed class ProcessingEventLogConfiguration : IEntityTypeConfiguration<P
         builder.Property(x => x.Id).HasColumnName("id").ValueGeneratedOnAdd();
         builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
 
-        builder.Property(x => x.ProcessingFileId)
+        builder.Property(x => x.ProcessingProcessingFileId)
             .HasColumnName("processing_file_id")
             .HasColumnType("CHAR(36)")
             .IsRequired();
@@ -36,14 +36,8 @@ public sealed class ProcessingEventLogConfiguration : IEntityTypeConfiguration<P
             .HasMaxLength(30)
             .IsRequired();
 
-        builder.HasIndex(x => x.ProcessingFileId).HasDatabaseName("idx_event_logs_file_id");
+        builder.HasIndex(x => x.ProcessingProcessingFileId).HasDatabaseName("idx_event_logs_file_id");
         builder.HasIndex(x => x.EventType).HasDatabaseName("idx_event_logs_event_type");
         builder.HasIndex(x => x.CreatedAt).HasDatabaseName("idx_event_logs_created_at");
-
-        builder.HasOne(x => x.File)
-            .WithMany(x => x.EventLogs)
-            .HasForeignKey(x => x.ProcessingFileId)
-            .HasConstraintName("fk_event_logs_file_id")
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
