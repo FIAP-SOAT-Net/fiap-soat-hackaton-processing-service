@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 _ = builder.Services.AddOpenApi();
 _ = builder.Services.AddSingleton(typeof(ILogger), typeof(Logger<Program>));
-_ = builder.Services.AddScoped<IUpdateProcessingFileService,  UpdateProcessingFileService>();
+_ = builder.Services.AddScoped<IUpdateProcessingFileService, UpdateProcessingFileService>();
 
 _ = builder.Services.AddHttpClient();
 
