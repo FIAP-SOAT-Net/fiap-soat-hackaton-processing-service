@@ -1,9 +1,10 @@
-using System.Text.Json;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.Exceptions;
 using Fiap.Soat.Hackaton.ProcessingService.Api.Shared.Middlewares;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 namespace Fiap.Soat.Hackaton.ProcessingService.Api.Tests.Shared.Middlewares;
+
 public class ExceptionMiddlewareTests
 {
     [Test]
