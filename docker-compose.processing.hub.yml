@@ -115,7 +115,7 @@ services:
       ConnectionStrings__MongoDB: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:${MONGODB_PORT}/${MONGODB_DATABASE}?authSource=admin"
       RabbitMq__Host: rabbitmq
       RabbitMq__Port: ${RABBITMQ_PORT}
-      RabbitMq__UserName: ${RABBITMQ_USER}
+      RabbitMq__User: ${RABBITMQ_USER}
       RabbitMq__Password: ${RABBITMQ_PASSWORD}
       RabbitMq__ExchangeName: ${RABBITMQ_EXCHANGE_NAME:-fileservice.events.exchange}
       RabbitMq__QueueName: ${RABBITMQ_QUEUE_NAME:-fileservice.events}
