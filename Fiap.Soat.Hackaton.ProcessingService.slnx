@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/analyzer-service/">
+    <Project Path="analyzerService/AnalyzerService.Api/AnalyzerService.Api.csproj" />
+  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/010 - Enterprise Business Rules/">
     <Project Path="src/Fiap.Soat.Hackaton.ProcessingService.Domain/Fiap.Soat.Hackaton.ProcessingService.Domain.csproj" />
