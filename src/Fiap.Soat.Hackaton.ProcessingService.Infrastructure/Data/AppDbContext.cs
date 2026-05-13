@@ -8,8 +8,8 @@ namespace Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Data;
 [ExcludeFromCodeCoverage]
 public class AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : DbContext(dbContextOptions)
 {
-     public DbSet<ProcessingFile> ProcessingFiles { get; set; }
-     public DbSet<ProcessingEventLog> EventLogs { get; set; }
+    public DbSet<ProcessingFile> ProcessingFiles { get; set; }
+    public DbSet<ProcessingEventLog> EventLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

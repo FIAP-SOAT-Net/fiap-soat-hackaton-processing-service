@@ -1,9 +1,9 @@
-using System.Data.Common;
-using System.Linq.Expressions;
 using Fiap.Soat.Hackaton.ProcessingService.Application.Adapters.Gateways.Repositories;
 using Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 using Fiap.Soat.Hackaton.ProcessingService.Domain.Shared;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
+using System.Linq.Expressions;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Repositories;
 

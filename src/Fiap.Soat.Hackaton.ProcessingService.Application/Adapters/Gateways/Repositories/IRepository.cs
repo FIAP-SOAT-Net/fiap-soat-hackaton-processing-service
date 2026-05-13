@@ -1,6 +1,6 @@
+using Fiap.Soat.Hackaton.ProcessingService.Domain.Shared;
 using System.Data.Common;
 using System.Linq.Expressions;
-using Fiap.Soat.Hackaton.ProcessingService.Domain.Shared;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Application.Adapters.Gateways.Repositories;
 
