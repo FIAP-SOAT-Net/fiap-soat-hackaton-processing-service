@@ -1,0 +1,190 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:8.4
+    container_name: fiap-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - fiap-network
+
+  flyway:
+    image: flyway/flyway
+    container_name: fiap-mysql-migration
+    command:
+      - "-url=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false"
+      - "-user=${MYSQL_USER}"
+      - "-password=${MYSQL_PASSWORD}"
+      - "-connectRetries=60"
+      - "migrate"
+    volumes:
+      - ./database/migrations:/flyway/sql
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - fiap-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: fiap-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    networks:
+      - fiap-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: fiap-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    networks:
+      - fiap-network
+    healthcheck:
+      test: rabbitmq-diagnostics ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LocalStack for AWS S3 Mocking
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack-pro
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
+      - "127.0.0.1:443:443"
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+      - DEBUG=${DEBUG:-0}
+      - PERSISTENCE=${PERSISTENCE:-0}
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - fiap-network
+
+  # .NET API
+  file-service-api:
+    image: ${DOCKERHUB_USERNAME}/fiap-soat-hackaton-file-service-api:latest
+    container_name: fiap-file-service-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      MongoDb__Host: mongodb
+      MongoDb__Port: ${MONGODB_PORT}
+      MongoDb__User: ${MONGODB_USER}
+      MongoDb__Password: ${MONGODB_PASSWORD}
+      MongoDb__Database: ${MONGODB_DATABASE}
+      ConnectionStrings__MongoDB: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb:${MONGODB_PORT}/${MONGODB_DATABASE}?authSource=admin"
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: ${RABBITMQ_PORT}
+      RabbitMq__UserName: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+      RabbitMq__ExchangeName: ${RABBITMQ_EXCHANGE_NAME:-fileservice.events.exchange}
+      RabbitMq__QueueName: ${RABBITMQ_QUEUE_NAME:-fileservice.events}
+      ConnectionStrings__RabbitMQ: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:${RABBITMQ_PORT}/"
+      S3__ServiceUrl: http://localstack:4566
+      S3__Region: ${S3_REGION}
+      S3__BucketName: ${S3_BUCKET_NAME}
+      S3__AccessKey: ${S3_ACCESS_KEY}
+      S3__SecretKey: ${S3_SECRET_KEY}
+      S3__ForcePathStyle: ${S3_FORCE_PATH_STYLE}
+    ports:
+      - "5180:8080"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - fiap-network
+
+  # Analyzer Service API
+  analyzer-service-api:
+    image: ${DOCKERHUB_USERNAME}/fiap-soat-hackaton-analyzer-service-api:latest
+    container_name: fiap-analyzer-service-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ProcessingService__BaseUrl: http://processing-service-api:8080
+    ports:
+      - "5181:8080"
+    networks:
+      - fiap-network
+
+  # Processing Service API
+  processing-service-api:
+    image: ${DOCKERHUB_USERNAME}/fiap-soat-hackaton-processing-service-api:latest
+    container_name: fiap-processing-service-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ConnectionStrings__MySql: "Server=mysqldb;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD};TreatTinyAsBoolean=false;AllowUserVariables=true"
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: 5672
+      RabbitMQ__User: ${RABBITMQ_USER}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      RabbitMQ__ExchangeName: ${RABBITMQ_EXCHANGE_NAME:-fileservice.events.exchange}
+      RabbitMQ__QueueName: ${RABBITMQ_QUEUE_NAME:-fileservice.events}
+      RabbitMQ__RoutingKey: ${RABBITMQ_ROUTING_KEY:-file.uploaded.*}
+      AnalyzerService__BaseUrl: http://analyzer-service-api:8080
+    ports:
+      - "5182:8080"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      analyzer-service-api:
+        condition: service_started
+    networks:
+      - fiap-network
+
+volumes:
+  mysql_data_dev:
+  mongodb_data:
+  mongodb_config:
+  rabbitmq_data:
+
+networks:
+  fiap-network:
+    driver: bridge
