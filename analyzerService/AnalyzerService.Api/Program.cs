@@ -18,9 +18,22 @@ _ = builder.Services.AddHangfire(config => config
 
 // Add the processing server as an IHostedService.
 _ = builder.Services.AddHangfireServer();
+_ = builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+_ = builder.Services.AddHttpLogging();
 
 var app = builder.Build();
 
+_ = app.UseCors("AllowAll");
+_ = app.UseHttpLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

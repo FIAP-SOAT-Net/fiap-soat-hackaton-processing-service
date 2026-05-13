@@ -141,6 +141,25 @@ services:
     networks:
       - fiap-network
 
+  # Analyzer Service API
+  analyzer-service-api:
+    build:
+      context: .
+      dockerfile: ./analyzerService/AnalyzerService.Api/Dockerfile
+    container_name: fiap-analyzer-service-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      # Processing Service Configuration
+      ProcessingService__BaseUrl: ${PROCESSING_SERVICE_URL:-http://processing-service-api:8080}
+    ports:
+      - "5181:8080"
+    depends_on:
+      - file-service-api
+    networks:
+      - fiap-network
+
 volumes:
   mysql_data_dev:
   mongodb_data:
