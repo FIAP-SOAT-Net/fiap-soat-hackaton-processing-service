@@ -1,12 +1,12 @@
-using System.Net;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 using Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Data;
 using Fiap.Soat.Hackaton.ProcessingService.Integration.Tests.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Integration.Tests.Api;
 

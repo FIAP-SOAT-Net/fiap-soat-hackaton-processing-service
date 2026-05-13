@@ -1,5 +1,6 @@
 using Fiap.Soat.Hackaton.ProcessingService.Application.Adapters.Gateways.Repositories;
 using Fiap.Soat.Hackaton.ProcessingService.Application.Adapters.Gateways.Services;
+using Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 using Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Data;
 using Fiap.Soat.Hackaton.ProcessingService.Infrastructure.Services.Messaging;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Fiap.Soat.Hackaton.ProcessingService.Domain.Entities;
 
 namespace Fiap.Soat.Hackaton.ProcessingService.Integration.Tests.Shared;
 
