@@ -62,10 +62,13 @@ _ = builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+_ = builder.Services.AddHttpClient();
+_ = builder.Services.AddHttpLogging();
 
 var app = builder.Build();
 
 _ = app.UseCors("AllowAll");
+_ = app.UseHttpLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
