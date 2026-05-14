@@ -1,0 +1,33 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: file-service
+    url: http://file-service-api:8080
+    routes:
+      - name: file-service-route
+        paths:
+          - /api/files
+        strip_path: true
+        path_handling: v0
+        methods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+
+  - name: processing-service
+    url: http://processing-service-api:8080
+    routes:
+      - name: processing-service-route
+        paths:
+          - /api/processing
+        strip_path: true
+        path_handling: v0
+        methods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
