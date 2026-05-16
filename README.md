@@ -25,6 +25,60 @@ Ele expõe uma API HTTP para consulta e atualização dos arquivos em processame
 - Testes com `NUnit`
 - Docker / Docker Compose
 
+## Fluxo principal da solução
+
+```mermaid
+graph TD
+  User(["👤 Usuário"])
+
+  subgraph Gateway["API Gateway / Entrada Pública"]
+    GW["Kong API Gateway"]
+  end
+
+  subgraph Upload["Serviço de Upload e Orquestração"]
+    UPL["file-service-api"]
+    MDB[("🗃️ MongoDB")]
+    S3[("🪣 S3 / LocalStack")]
+    QUEUE[["🗄️ RabbitMQ / fila de eventos"]]
+  end
+
+  subgraph Processing["Serviço de Processamento (IA)"]
+    PROC["processing-service-api"]
+    AI["🤖 analyzer-service-api"]
+    MYSQL1[("🗃️ MySQL")]
+  end
+
+  subgraph Reports["Serviço de Relatórios"]
+    API["reports-service-api"]
+    APP["Application Layer"]
+    INFRA["Infrastructure Layer"]
+    MYSQL2[("🗃️ MySQL")]
+  end
+
+  User -->|"POST /api/files/files/upload"| GW
+  GW --> UPL
+  UPL -->|"salva arquivo"| MDB
+  UPL -->|"salva arquivo"| S3
+  UPL -->|"publica evento"| QUEUE
+  QUEUE -->|"consome"| PROC
+  PROC -->|"registra processamento"| MYSQL1
+  PROC --> AI
+  AI -->|"atualiza etapas"| PROC
+  AI -->|"envia análise final"| API
+  API --> APP --> INFRA --> MYSQL2
+
+  User -->|"GET relatório / export PDF"| GW
+  GW --> API
+```
+
+Esse fluxo resume o caminho principal descrito no `docker-compose.processing.hub.yml`:
+
+- o upload entra pelo `kong` e é redirecionado para o `file-service-api`;
+- o `file-service-api` persiste o arquivo no MongoDB e no S3, e publica um evento no RabbitMQ;
+- o `processing-service-api` consome a mensagem, registra o processamento no MySQL e aciona o `analyzer-service-api`;
+- o `analyzer-service-api` devolve os passos de processamento ao `processing-service-api`;
+- ao final, a análise é enviada para o `reports-service-api`, que persiste o resultado no MySQL.
+
 ## Estrutura do projeto
 
 ```text
