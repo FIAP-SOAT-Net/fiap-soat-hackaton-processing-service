@@ -31,3 +31,18 @@ services:
           - PUT
           - PATCH
           - DELETE
+
+  - name: reports-service
+    url: http://reports-service-api:8080
+    routes:
+      - name: reports-service-route
+        paths:
+          - /api/reports
+        strip_path: true
+        path_handling: v0
+        methods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE

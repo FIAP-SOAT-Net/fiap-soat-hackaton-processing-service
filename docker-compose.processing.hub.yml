@@ -127,7 +127,6 @@ services:
     networks:
       - fiap-network
 
-  # .NET API
   file-service-api:
     image: ${DOCKERHUB_USERNAME}/fiap-soat-hackaton-file-service-api:latest
     container_name: fiap-file-service-api
@@ -175,6 +174,7 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
       ProcessingService__BaseUrl: http://processing-service-api:8080
+      ReportsService__BaseUrl: http://reports-service-api:8080
     ports:
       - "5181:8080"
     networks:
@@ -207,6 +207,23 @@ services:
       analyzer-service-api:
         condition: service_started
       kong:
+        condition: service_healthy
+    networks:
+      - fiap-network
+
+  reports-service-api:
+    image: ${DOCKERHUB_USERNAME}/fiap-soat-hackaton-reports-service-api:latest
+    container_name: fiap-reports-service-api
+    restart: unless-stopped
+    expose:
+      - "8080"
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ConnectionStrings__Default: "Server=mysqldb;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD};TreatTinyAsBoolean=false;AllowUserVariables=true"
+    depends_on:
+      mysqldb:
         condition: service_healthy
     networks:
       - fiap-network

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 _ = builder.Services.AddOpenApi();
 _ = builder.Services.AddSingleton(typeof(ILogger), typeof(Logger<Program>));
 _ = builder.Services.AddScoped<IUpdateProcessingFileService, UpdateProcessingFileService>();
+_ = builder.Services.AddScoped<ISendAnalysisResultService, SendAnalysisResultService>();
 
 _ = builder.Services.AddHttpClient();
 
@@ -46,13 +47,16 @@ _ = app.MapPost("/analyze", async (
         [FromBody] ProcessingFileDto request,
         [FromServices] ILogger logger,
         [FromServices] IBackgroundJobClient backgroundJobs,
-        [FromServices] IUpdateProcessingFileService service) =>
+        [FromServices] IUpdateProcessingFileService fileService,
+        [FromServices] ISendAnalysisResultService reportService
+        ) =>
     {
         logger.LogInformation("Start creating analysis to {@Request}", request);
-        var firstProcessingJobId = BackgroundJob.Schedule(() => service.UpdateProcessingFileAsync(request.Id, "PROCESSING"), TimeSpan.FromMinutes(3));
-        var secondProcessingJobId = BackgroundJob.ContinueJobWith(firstProcessingJobId, () => service.UpdateProcessingFileAsync(request.Id, "PROCESSING"));
-        var analyzedJobId = BackgroundJob.ContinueJobWith(secondProcessingJobId, () => service.UpdateProcessingFileAsync(request.Id, "ANALYZED"));
-        _ = BackgroundJob.ContinueJobWith(analyzedJobId, () => service.UpdateProcessingFileAsync(request.Id, "PROCESSED"));
+        var firstProcessingJobId = BackgroundJob.Schedule(() => fileService.UpdateProcessingFileAsync(request.Id, "PROCESSING"), TimeSpan.FromSeconds(3));
+        var secondProcessingJobId = BackgroundJob.ContinueJobWith(firstProcessingJobId, () => fileService.UpdateProcessingFileAsync(request.Id, "PROCESSING"));
+        var analyzedJobId = BackgroundJob.ContinueJobWith(secondProcessingJobId, () => fileService.UpdateProcessingFileAsync(request.Id, "ANALYZED"));
+        var processedJobId = BackgroundJob.ContinueJobWith(analyzedJobId, () => fileService.UpdateProcessingFileAsync(request.Id, "PROCESSED"));
+        _ = BackgroundJob.ContinueJobWith(processedJobId, () => reportService.SendAsync(request.Id, request.Name));
         return Results.Created();
     })
     .WithName("SendAnalysisRequest");
